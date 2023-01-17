@@ -37,8 +37,8 @@ class FilterAction(gym.ActionWrapper):
 
 class NotVecNormalize(gym.Wrapper):
     """
-    Normal Gym wrapper that replicates the functionality of Stable Baselines3's VecNormalize wrapper
-    for non VecEnvs (i.e. `gym.Env`) in production.
+    Normal Gym wrapper that replicates the functionality of Stable Baselines3's
+    VecNormalize wrapper for non VecEnvs (i.e. `gym.Env`) in production.
     """
 
     def __init__(self, env, path):
@@ -143,7 +143,8 @@ class PolishedDonkeyCompatibility(gym.Wrapper):
 
 
 class RecordEpisode(gym.Wrapper):
-    """Wrapper for recording epsiode data such as observations, rewards, infos and actions.
+    """
+    Wrapper for recording epsiode data such as observations, rewards, infos and actions.
     """
 
     def __init__(self, env):

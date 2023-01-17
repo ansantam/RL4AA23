@@ -1,4 +1,3 @@
-import pickle
 from datetime import datetime
 
 import gym
@@ -6,12 +5,10 @@ import imageio
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from gym import spaces
-from gym.wrappers import FlattenObservation, RecordVideo, RescaleAction, TimeLimit
+from gym.wrappers import RecordVideo
 from IPython import display
 from moviepy.editor import VideoFileClip
-from stable_baselines3 import PPO, TD3
-from stable_baselines3.common.env_util import unwrap_wrapper
+from stable_baselines3 import PPO
 
 from .ea_train import make_env, read_from_yaml
 from .utils import NotVecNormalize
@@ -143,7 +140,9 @@ def record_video(env):
 
 def show_video(filename):
     return display.Video(filename)
-    """Wrapper for recording epsiode data such as observations, rewards, infos and actions."""
+    """
+    Wrapper for recording epsiode data such as observations, rewards, infos and actions.
+    """
 
     def __init__(self, env):
         super().__init__(env)

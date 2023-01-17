@@ -18,7 +18,7 @@ from gym.wrappers import (
     RescaleAction,
     TimeLimit,
 )
-from stable_baselines3 import A2C, PPO, SAC, TD3
+from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 
@@ -199,18 +199,19 @@ class ARESEA(gym.Env):
     Parameters
     ----------
     action_mode : str
-        How actions work. Choose `"direct"`, `"direct_unidirectional_quads"` or `"delta"`.
+        How actions work. Choose `"direct"`, `"direct_unidirectional_quads"` or
+        `"delta"`.
     magnet_init_mode : str
         Magnet initialisation on `reset`. Set to `None`, `"random"` or `"constant"`. The
         `"constant"` setting requires `magnet_init_values` to be set.
     magnet_init_values : np.ndarray
-        Values to set magnets to on `reset`. May only be set when `magnet_init_mode` is set to
-        `"constant"`.
+        Values to set magnets to on `reset`. May only be set when `magnet_init_mode` is
+        set to `"constant"`.
     reward_mode : str
         How to compute the reward. Choose from `"feedback"` or `"differential"`.
     target_beam_mode : str
-        Setting of target beam on `reset`. Choose from `"constant"` or `"random"`. The `"constant"`
-        setting requires `target_beam_values` to be set.
+        Setting of target beam on `reset`. Choose from `"constant"` or `"random"`. The
+        `"constant"` setting requires `target_beam_values` to be set.
     """
 
     metadata = {"render.modes": ["rgb_array"], "video.frames_per_second": 2}
@@ -316,7 +317,7 @@ class ARESEA(gym.Env):
             self.set_magnets(self.magnet_init_values)
         elif self.magnet_init_mode == "random":
             self.set_magnets(self.observation_space["magnets"].sample())
-        elif self.magnet_init_mode == None:
+        elif self.magnet_init_mode is None:
             pass  # This really is intended to do nothing
         else:
             raise ValueError(
@@ -610,15 +611,16 @@ class ARESEA(gym.Env):
 
     def setup_accelerator(self):
         """
-        Prepare the accelerator for use with the environment. Should mostly be used for setting up
-        simulations.
+        Prepare the accelerator for use with the environment. Should mostly be used for
+        setting up simulations.
 
         Override with backend-specific imlementation. Optional.
         """
 
     def get_magnets(self):
         """
-        Return the magnet values as a NumPy array in order as the magnets appear in the accelerator.
+        Return the magnet values as a NumPy array in order as the magnets appear in the
+        accelerator.
 
         Override with backend-specific imlementation. Must be implemented!
         """
@@ -628,10 +630,11 @@ class ARESEA(gym.Env):
         """
         Set the magnets to the given values.
 
-        The argument `magnets` will be passed as a NumPy array in the order the magnets appear in
-        the accelerator.
+        The argument `magnets` will be passed as a NumPy array in the order the magnets
+        appear in the accelerator.
 
-        When applicable, this method should block until the magnet values are acutally set!
+        When applicable, this method should block until the magnet values are acutally
+        set!
 
         Override with backend-specific imlementation. Must be implemented!
         """
@@ -639,26 +642,27 @@ class ARESEA(gym.Env):
 
     def reset_accelerator(self):
         """
-        Code that should set the accelerator up for a new episode. Run when the `reset` is called.
+        Code that should set the accelerator up for a new episode. Run when the `reset`
+        is called.
 
-        Mostly meant for simulations to switch to a new incoming beam / misalignments or simular
-        things.
+        Mostly meant for simulations to switch to a new incoming beam / misalignments or
+        similar things.
 
         Override with backend-specific imlementation. Optional.
         """
 
     def update_accelerator(self):
         """
-        Update accelerator metrics for later use. Use this to run the simulation or cache the beam
-        image.
+        Update accelerator metrics for later use. Use this to run the simulation or
+        cache the beam image.
 
         Override with backend-specific imlementation. Optional.
         """
 
     def get_beam_parameters(self):
         """
-        Get the beam parameters measured on the diagnostic screen as NumPy array grouped by
-        dimension (e.g. mu_x, sigma_x, mu_y, sigma_y).
+        Get the beam parameters measured on the diagnostic screen as NumPy array grouped
+        by dimension (e.g. mu_x, sigma_x, mu_y, sigma_y).
 
         Override with backend-specific imlementation. Must be implemented!
         """
@@ -666,8 +670,9 @@ class ARESEA(gym.Env):
 
     def get_incoming_parameters(self):
         """
-        Get all physical beam parameters of the incoming beam as NumPy array in order energy, mu_x,
-        mu_xp, mu_y, mu_yp, sigma_x, sigma_xp, sigma_y, sigma_yp, sigma_s, sigma_p.
+        Get all physical beam parameters of the incoming beam as NumPy array in order
+        energy, mu_x, mu_xp, mu_y, mu_yp, sigma_x, sigma_xp, sigma_y, sigma_yp, sigma_s,
+        sigma_p.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -675,10 +680,10 @@ class ARESEA(gym.Env):
 
     def get_misalignments(self):
         """
-        Get misalignments of the quadrupoles and the diagnostic screen as NumPy array in order
-        AREAMQZM1.misalignment.x, AREAMQZM1.misalignment.y, AREAMQZM2.misalignment.x,
-        AREAMQZM2.misalignment.y, AREAMQZM3.misalignment.x, AREAMQZM3.misalignment.y,
-        AREABSCR1.misalignment.x, AREABSCR1.misalignment.y.
+        Get misalignments of the quadrupoles and the diagnostic screen as NumPy array in
+        order AREAMQZM1.misalignment.x, AREAMQZM1.misalignment.y,
+        AREAMQZM2.misalignment.x, AREAMQZM2.misalignment.y, AREAMQZM3.misalignment.x,
+        AREAMQZM3.misalignment.y, AREABSCR1.misalignment.x, AREABSCR1.misalignment.y.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -688,11 +693,11 @@ class ARESEA(gym.Env):
         """
         Retreive the beam image as a 2-dimensional NumPy array.
 
-        Note that if reading the beam image is expensive, it is best to cache the image in the
-        `update_accelerator` method and the read the cached variable here.
+        Note that if reading the beam image is expensive, it is best to cache the image
+        in the `update_accelerator` method and the read the cached variable here.
 
-        Ideally, the pixel values should look somewhat similar to the 12-bit values from the real
-        screen camera.
+        Ideally, the pixel values should look somewhat similar to the 12-bit values from
+        the real screen camera.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -716,8 +721,8 @@ class ARESEA(gym.Env):
 
     def get_pixel_size(self):
         """
-        Return the (binned) size of the area on the diagnostic screen covered by one pixel as NumPy
-        array [x, y].
+        Return the (binned) size of the area on the diagnostic screen covered by one
+        pixel as NumPy array [x, y].
 
         Override with backend-specific imlementation. Optional.
         """
@@ -725,8 +730,8 @@ class ARESEA(gym.Env):
 
     def get_accelerator_observation_space(self):
         """
-        Return a dictionary of aditional observation spaces for observations from the accelerator
-        backend, e.g. incoming beam and misalignments in simulation.
+        Return a dictionary of aditional observation spaces for observations from the
+        accelerator backend, e.g. incoming beam and misalignments in simulation.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -734,8 +739,8 @@ class ARESEA(gym.Env):
 
     def get_accelerator_observation(self):
         """
-        Return a dictionary of aditional observations from the accelerator backend, e.g. incoming
-        beam and misalignments in simulation.
+        Return a dictionary of aditional observations from the accelerator backend, e.g.
+        incoming beam and misalignments in simulation.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -743,8 +748,8 @@ class ARESEA(gym.Env):
 
     def get_accelerator_info(self):
         """
-        Return a dictionary of aditional info from the accelerator backend, e.g. incoming beam and
-        misalignments in simulation.
+        Return a dictionary of aditional info from the accelerator backend, e.g.
+        incoming beam and misalignments in simulation.
 
         Override with backend-specific imlementation. Optional.
         """
@@ -930,7 +935,8 @@ class ARESEACheetah(ARESEA):
         )
 
     def get_beam_image(self):
-        # Beam image to look like real image by dividing by goodlooking number and scaling to 12 bits)
+        # Beam image to look like real image by dividing by goodlooking number and
+        # scaling to 12 bits
         return self.simulation.AREABSCR1.reading / 1e9 * 2**12
 
     def get_binning(self):

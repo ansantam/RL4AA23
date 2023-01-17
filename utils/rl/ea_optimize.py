@@ -4,7 +4,6 @@ from io import BytesIO
 
 # import pydoocs
 import dummypydoocs as pydoocs
-import gym
 import matplotlib.pyplot as plt
 import numpy as np
 from ea_train import ARESEA, read_from_yaml
@@ -384,8 +383,8 @@ class ARESEADOOCS(ARESEA):
 
     def capture_clean_beam_image(self, average=5):
         """
-        Capture a clean image of the beam from the screen using `average` images with beam on and
-        `average` images of the background and then removing the background.
+        Capture a clean image of the beam from the screen using `average` images with
+        beam on and `average` images of the background and then removing the background.
 
         Saves the image to a property of the object.
         """
@@ -417,7 +416,8 @@ class ARESEADOOCS(ARESEA):
         return pydoocs.read("SINBAD.DIAG/CAMERA/AR.EA.BSC.R.1/IMAGE_EXT_ZMQ")["data"]
 
     def set_cathode_laser(self, setto):
-        """Sets the bool switch of the cathode laser event to `setto` and waits a second.
+        """
+        Sets the bool switch of the cathode laser event to `setto` and waits a second.
         """
         address = "SINBAD.DIAG/TIMER.CENTRAL/MASTER/EVENT5"
         bits = pydoocs.read(address)["data"]
