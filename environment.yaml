@@ -1,4 +1,4 @@
-name: use-case-desy-ii
+name: rl4aa23-tutorial
 channels:
   - conda-forge
 dependencies:
