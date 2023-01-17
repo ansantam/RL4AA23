@@ -1,0 +1,27 @@
+name: use-case-desy-ii
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - ffmpeg
+  - opencv
+  - pyfftw
+  - swig
+  - pip:
+    - git+https://github.com/desy-ml/cheetah.git@v0.5.13
+    - gym[box2d]==0.21
+    - imageio
+    - IPython
+    - Jupyter
+    - jupyterlab
+    - matplotlib
+    - moviepy
+    - names
+    - numba
+    - numexpr
+    - numpy
+    - pandas
+    - pyyaml
+    - stable-baselines3
+    - torch

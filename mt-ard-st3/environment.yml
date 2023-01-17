@@ -1,0 +1,30 @@
+name: mt-ard-st3-ml-workshop
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - ffmpeg
+  - opencv
+  - pyfftw
+  - swig
+  - pip:
+    - git+https://github.com/desy-ml/cheetah.git@v0.5.13
+    - gym[box2d]==0.21
+    - h5py
+    - imageio
+    - IPython
+    - Jupyter
+    - jupyterlab
+    - jupyter_contrib_nbextensions
+    - jupyter_nbextensions_configurator
+    - matplotlib
+    - moviepy
+    - numba
+    - numexpr
+    - numpy
+    - pandas
+    - scikit-learn
+    - scikit-optimize
+    - stable-baselines3
+    - torch
