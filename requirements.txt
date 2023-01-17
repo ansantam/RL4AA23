@@ -1,5 +1,5 @@
 cheetah-accelerator
-imageio
+imageio==2.4.1
 ipywidgets
 jupyterlab
 matplotlib
