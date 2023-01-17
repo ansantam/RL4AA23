@@ -2,6 +2,7 @@
 
 
 import pathlib
+import pickle
 from functools import partial
 
 import cheetah
@@ -22,7 +23,6 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 
-from .ARESlatticeStage3v1_9 import cell as ares_lattice
 from .utils import FilterAction
 
 
@@ -819,14 +819,8 @@ class ARESEACheetah(ARESEA):
         self.misalignment_values = misalignment_values
 
         # Create particle simulation
-        self.simulation = cheetah.Segment.from_ocelot(
-            ares_lattice, warnings=False, device="cpu"
-        ).subcell("AREASOLA1", "AREABSCR1")
-        self.simulation.AREABSCR1.resolution = (2448, 2040)
-        self.simulation.AREABSCR1.pixel_size = (3.3198e-6, 2.4469e-6)
-        self.simulation.AREABSCR1.is_active = True
-        self.simulation.AREABSCR1.binning = 4
-        self.simulation.AREABSCR1.is_active = True
+        with open("utils/rl/ea_lattice.pkl", "rb") as f:
+            self.simulation = pickle.load(f)
 
     def is_beam_on_screen(self):
         screen = self.simulation.AREABSCR1
