@@ -1,0 +1,10 @@
+cheetah-accelerator
+imageio
+ipywidgets
+jupyterlab
+matplotlib
+moviepy
+names
+opencv-python
+pyyaml
+stable-baselines3==1.5
