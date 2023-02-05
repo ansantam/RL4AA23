@@ -197,7 +197,7 @@ class ARESEA(gym.Env):
 
     def __init__(
         self,
-        action_mode="direct",
+        action_mode="delta",
         include_screen_image_in_info=True,
         magnet_init_mode=None,
         magnet_init_values=None,
@@ -690,7 +690,7 @@ class ARESEACheetah(ARESEA):
         incoming_values=None,
         misalignment_mode="random",
         misalignment_values=None,
-        action_mode="direct",
+        action_mode="delta",
         include_screen_image_in_info=False,
         magnet_init_mode="zero",
         magnet_init_values=None,
