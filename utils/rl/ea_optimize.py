@@ -230,7 +230,7 @@ class ARESEADOOCS(ARESEA):
     ):
         super().__init__(
             action_mode=action_mode,
-            include_beam_image_in_info=include_beam_image_in_info,
+            include_screen_image_in_info=include_beam_image_in_info,
             magnet_init_mode=magnet_init_mode,
             magnet_init_values=magnet_init_values,
             reward_mode=reward_mode,
@@ -303,7 +303,7 @@ class ARESEADOOCS(ARESEA):
         self.beam_image = self.capture_clean_beam_image()
 
     def get_beam_parameters(self):
-        img = self.get_beam_image()
+        img = self.get_screen_image()
         pixel_size = self.get_pixel_size()
 
         parameters = {}
@@ -337,7 +337,7 @@ class ARESEADOOCS(ARESEA):
             ]
         )
 
-    def get_beam_image(self):
+    def get_screen_image(self):
         return self.beam_image
 
     def get_binning(self):
