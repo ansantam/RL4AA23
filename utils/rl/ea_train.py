@@ -198,7 +198,7 @@ class ARESEA(gym.Env):
     def __init__(
         self,
         action_mode="direct",
-        include_beam_image_in_info=True,
+        include_screen_image_in_info=True,
         magnet_init_mode=None,
         magnet_init_values=None,
         reward_mode="differential",
@@ -211,7 +211,7 @@ class ARESEA(gym.Env):
         threshold_hold=1,
     ):
         self.action_mode = action_mode
-        self.include_beam_image_in_info = include_beam_image_in_info
+        self.include_screen_image_in_info = include_screen_image_in_info
         self.magnet_init_mode = magnet_init_mode
         self.magnet_init_values = magnet_init_values
         self.reward_mode = reward_mode
@@ -357,9 +357,9 @@ class ARESEA(gym.Env):
 
         # Compute reward
         if self.reward_mode == "negative_objective":
-            reward = np.sum(np.abs(cb - tb)[[1, 3]])
+            reward = -np.sum(np.abs(cb - tb)[[1, 3]])
         elif self.reward_mode == "sum_of_pixels":
-            screen_image = self.get_beam_image()
+            screen_image = self.get_screen_image()
             reward = -np.sum(screen_image)
         else:
             raise ValueError(f'Invalid value "{self.reward_mode}" for reward_mode')
@@ -379,8 +379,8 @@ class ARESEA(gym.Env):
             "pixel_size": self.get_pixel_size(),
             "screen_resolution": self.get_screen_resolution(),
         }
-        if self.include_beam_image_in_info:
-            info["beam_image"] = self.get_beam_image()
+        if self.include_screen_image_in_info:
+            info["screen_image"] = self.get_screen_image()
         info.update(self.get_accelerator_info())
 
         self.previous_beam = current_beam
@@ -395,7 +395,7 @@ class ARESEA(gym.Env):
         resolution = self.get_screen_resolution()
 
         # Read screen image and make 8-bit RGB
-        img = self.get_beam_image()
+        img = self.get_screen_image()
         img = img / 2**12 * 255
         img = img.clip(0, 255).astype(np.uint8)
         img = np.repeat(img[:, :, np.newaxis], 3, axis=-1)
@@ -616,7 +616,7 @@ class ARESEA(gym.Env):
         """
         raise NotImplementedError
 
-    def get_beam_image(self):
+    def get_screen_image(self):
         """
         Retreive the beam image as a 2-dimensional NumPy array.
 
@@ -691,7 +691,7 @@ class ARESEACheetah(ARESEA):
         misalignment_mode="random",
         misalignment_values=None,
         action_mode="direct",
-        include_beam_image_in_info=False,
+        include_screen_image_in_info=False,
         magnet_init_mode="zero",
         magnet_init_values=None,
         reward_mode="differential",
@@ -705,7 +705,7 @@ class ARESEACheetah(ARESEA):
     ):
         super().__init__(
             action_mode=action_mode,
-            include_beam_image_in_info=include_beam_image_in_info,
+            include_screen_image_in_info=include_screen_image_in_info,
             magnet_init_mode=magnet_init_mode,
             magnet_init_values=magnet_init_values,
             reward_mode=reward_mode,
@@ -833,7 +833,7 @@ class ARESEACheetah(ARESEA):
             dtype=np.float32,
         )
 
-    def get_beam_image(self):
+    def get_screen_image(self):
         # Beam image to look like real image by dividing by goodlooking number and
         # scaling to 12 bits
         return self.simulation.AREABSCR1.reading / 1e9 * 2**12
