@@ -17,11 +17,11 @@ from .utils import NotVecNormalize
 
 
 def evaluate_ares_ea_agent(run_name, n=200, include_position=False):
-    loaded_model = PPO.load("utils/rl/ares_ea/models/ml_workshop/model")
-    loaded_config = read_from_yaml("utils/rl/ares_ea/models/ml_workshop/config")
+    loaded_model = PPO.load(f"utils/rl/ares_ea/models/{run_name}/model")
+    loaded_config = read_from_yaml(f"utils/rl/ares_ea/models/{run_name}/config")
 
     env = make_env(loaded_config)
-    env = NotVecNormalize(env, "utils/rl/ares_ea/models/ml_workshop/normalizer")
+    env = NotVecNormalize(env, f"utils/rl/ares_ea/models/{run_name}/normalizer")
 
     maes = []
     for _ in range(n):

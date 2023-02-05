@@ -54,17 +54,6 @@ def main():
         "threshold_hold": 5,
         "time_limit": 25,
         "vec_env": "subproc",
-        "w_done": 50.0,
-        "w_mu_x": 0.0,
-        "w_mu_x_in_threshold": 0.0,
-        "w_mu_y": 0.0,
-        "w_mu_y_in_threshold": 0.0,
-        "w_on_screen": 0.0,
-        "w_sigma_x": 1.0,
-        "w_sigma_x_in_threshold": 1.0,
-        "w_sigma_y": 1.0,
-        "w_sigma_y_in_threshold": 1.0,
-        "w_time": 0.0,
     }
 
     train(config)
@@ -160,16 +149,6 @@ def make_env(config, record_video=False, monitor_filename=None):
         target_sigma_x_threshold=config["target_sigma_x_threshold"],
         target_sigma_y_threshold=config["target_sigma_y_threshold"],
         threshold_hold=config["threshold_hold"],
-        w_mu_x=config["w_mu_x"],
-        w_mu_x_in_threshold=config["w_mu_x_in_threshold"],
-        w_mu_y=config["w_mu_y"],
-        w_mu_y_in_threshold=config["w_mu_y_in_threshold"],
-        w_on_screen=config["w_on_screen"],
-        w_sigma_x=config["w_sigma_x"],
-        w_sigma_x_in_threshold=config["w_sigma_x_in_threshold"],
-        w_sigma_y=config["w_sigma_y"],
-        w_sigma_y_in_threshold=config["w_sigma_y_in_threshold"],
-        w_time=config["w_time"],
     )
     if config["filter_observation"] is not None:
         env = FilterObservation(env, config["filter_observation"])
@@ -230,17 +209,6 @@ class ARESEA(gym.Env):
         target_sigma_x_threshold=3.3198e-6,
         target_sigma_y_threshold=2.4469e-6,
         threshold_hold=1,
-        w_done=1.0,
-        w_mu_x=1.0,
-        w_mu_x_in_threshold=1.0,
-        w_mu_y=1.0,
-        w_mu_y_in_threshold=1.0,
-        w_on_screen=1.0,
-        w_sigma_x=1.0,
-        w_sigma_x_in_threshold=1.0,
-        w_sigma_y=1.0,
-        w_sigma_y_in_threshold=1.0,
-        w_time=1.0,
     ):
         self.action_mode = action_mode
         self.include_beam_image_in_info = include_beam_image_in_info
@@ -254,17 +222,6 @@ class ARESEA(gym.Env):
         self.target_sigma_x_threshold = target_sigma_x_threshold
         self.target_sigma_y_threshold = target_sigma_y_threshold
         self.threshold_hold = threshold_hold
-        self.w_done = w_done
-        self.w_mu_x = w_mu_x
-        self.w_mu_x_in_threshold = w_mu_x_in_threshold
-        self.w_mu_y = w_mu_y
-        self.w_mu_y_in_threshold = w_mu_y_in_threshold
-        self.w_on_screen = w_on_screen
-        self.w_sigma_x = w_sigma_x
-        self.w_sigma_x_in_threshold = w_sigma_x_in_threshold
-        self.w_sigma_y = w_sigma_y
-        self.w_sigma_y_in_threshold = w_sigma_y_in_threshold
-        self.w_time = w_time
 
         # Create action space
         if self.action_mode == "direct":
@@ -399,37 +356,13 @@ class ARESEA(gym.Env):
         done = is_stable_in_threshold and len(self.is_in_threshold_history) > 5
 
         # Compute reward
-        on_screen_reward = -(not self.is_beam_on_screen())
-        time_reward = -1
-        done_reward = done * (25 - self.steps_taken) / 25
-        if self.reward_mode == "differential":
-            mu_x_reward = (abs(pb[0] - tb[0]) - abs(cb[0] - tb[0])) / abs(ib[0] - tb[0])
-            sigma_x_reward = (abs(pb[1] - tb[1]) - abs(cb[1] - tb[1])) / abs(
-                ib[1] - tb[1]
-            )
-            mu_y_reward = (abs(pb[2] - tb[2]) - abs(cb[2] - tb[2])) / abs(ib[2] - tb[2])
-            sigma_y_reward = (abs(pb[3] - tb[3]) - abs(cb[3] - tb[3])) / abs(
-                ib[3] - tb[3]
-            )
-        elif self.reward_mode == "feedback":
-            mu_x_reward = -abs((cb[0] - tb[0]) / (ib[0] - tb[0]))
-            sigma_x_reward = -abs((cb[1] - tb[1]) / (ib[1] - tb[1]))
-            mu_y_reward = -abs((cb[2] - tb[2]) / (ib[2] - tb[2]))
-            sigma_y_reward = -abs((cb[3] - tb[3]) / (ib[3] - tb[3]))
+        if self.reward_mode == "negative_objective":
+            reward = np.sum(np.abs(cb - tb)[[1, 3]])
+        elif self.reward_mode == "sum_of_pixels":
+            screen_image = self.get_beam_image()
+            reward = -np.sum(screen_image)
         else:
             raise ValueError(f'Invalid value "{self.reward_mode}" for reward_mode')
-
-        reward = 0
-        reward += self.w_on_screen * on_screen_reward
-        reward += self.w_mu_x * mu_x_reward
-        reward += self.w_sigma_x * sigma_x_reward
-        reward += self.w_mu_y * mu_y_reward
-        reward += self.w_sigma_y * sigma_y_reward * self.w_time * time_reward
-        reward += self.w_mu_x_in_threshold * is_in_threshold[0]
-        reward += self.w_sigma_x_in_threshold * is_in_threshold[1]
-        reward += self.w_mu_y_in_threshold * is_in_threshold[2]
-        reward += self.w_sigma_y_in_threshold * is_in_threshold[3]
-        reward += self.w_done * done_reward
         reward = float(reward)
 
         # Put together info
@@ -443,14 +376,8 @@ class ARESEA(gym.Env):
             "binning": self.get_binning(),
             "mae_focus": mae_focus,
             "mae_all": mae_all,
-            "mu_x_reward": mu_x_reward,
-            "mu_y_reward": mu_y_reward,
-            "on_screen_reward": on_screen_reward,
             "pixel_size": self.get_pixel_size(),
             "screen_resolution": self.get_screen_resolution(),
-            "sigma_x_reward": sigma_x_reward,
-            "sigma_y_reward": sigma_y_reward,
-            "time_reward": time_reward,
         }
         if self.include_beam_image_in_info:
             info["beam_image"] = self.get_beam_image()
@@ -775,17 +702,6 @@ class ARESEACheetah(ARESEA):
         target_sigma_x_threshold=3.3198e-6,
         target_sigma_y_threshold=2.4469e-6,
         threshold_hold=1,
-        w_done=1.0,
-        w_mu_x=1.0,
-        w_mu_x_in_threshold=1.0,
-        w_mu_y=1.0,
-        w_mu_y_in_threshold=1.0,
-        w_on_screen=1.0,
-        w_sigma_x=1.0,
-        w_sigma_x_in_threshold=1.0,
-        w_sigma_y=1.0,
-        w_sigma_y_in_threshold=1.0,
-        w_time=1.0,
     ):
         super().__init__(
             action_mode=action_mode,
@@ -800,17 +716,6 @@ class ARESEACheetah(ARESEA):
             target_sigma_x_threshold=target_sigma_x_threshold,
             target_sigma_y_threshold=target_sigma_y_threshold,
             threshold_hold=threshold_hold,
-            w_done=w_done,
-            w_mu_x=w_mu_x,
-            w_mu_x_in_threshold=w_mu_x_in_threshold,
-            w_mu_y=w_mu_y,
-            w_mu_y_in_threshold=w_mu_y_in_threshold,
-            w_on_screen=w_on_screen,
-            w_sigma_x=w_sigma_x,
-            w_sigma_x_in_threshold=w_sigma_x_in_threshold,
-            w_sigma_y=w_sigma_y,
-            w_sigma_y_in_threshold=w_sigma_y_in_threshold,
-            w_time=w_time,
         )
 
         self.incoming_mode = incoming_mode
