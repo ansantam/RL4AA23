@@ -197,6 +197,7 @@ class ARESEA(gym.Env):
 
     def __init__(
         self,
+        abort_if_off_screen=False,
         action_mode="delta",
         include_screen_image_in_info=True,
         magnet_init_mode=None,
@@ -210,6 +211,7 @@ class ARESEA(gym.Env):
         target_sigma_y_threshold=2.4469e-6,
         threshold_hold=1,
     ):
+        self.abort_if_off_screen = abort_if_off_screen
         self.action_mode = action_mode
         self.include_screen_image_in_info = include_screen_image_in_info
         self.magnet_init_mode = magnet_init_mode
@@ -353,7 +355,9 @@ class ARESEA(gym.Env):
         is_stable_in_threshold = bool(
             np.array(self.is_in_threshold_history[-self.threshold_hold :]).all()
         )
-        done = is_stable_in_threshold and len(self.is_in_threshold_history) > 5
+        is_success = is_stable_in_threshold and len(self.is_in_threshold_history) > 5
+        is_failure = self.abort_if_off_screen and not self.is_beam_on_screen
+        done = is_success or is_failure
 
         # Compute reward
         if self.reward_mode == "negative_objective":
@@ -690,6 +694,7 @@ class ARESEACheetah(ARESEA):
         incoming_values=None,
         misalignment_mode="random",
         misalignment_values=None,
+        abort_if_off_screen=False,
         action_mode="delta",
         include_screen_image_in_info=False,
         magnet_init_mode="zero",
@@ -705,6 +710,7 @@ class ARESEACheetah(ARESEA):
     ):
         super().__init__(
             action_mode=action_mode,
+            abort_if_off_screen=abort_if_off_screen,
             include_screen_image_in_info=include_screen_image_in_info,
             magnet_init_mode=magnet_init_mode,
             magnet_init_values=magnet_init_values,
