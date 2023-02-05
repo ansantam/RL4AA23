@@ -138,6 +138,7 @@ def make_env(config, record_video=False, monitor_filename=None):
         incoming_values=config["incoming_values"],
         misalignment_mode=config["misalignment_mode"],
         misalignment_values=config["misalignment_values"],
+        abort_if_off_screen=config["abort_if_off_screen"],
         action_mode=config["action_mode"],
         magnet_init_mode=config["magnet_init_mode"],
         magnet_init_values=config["magnet_init_values"],
@@ -356,7 +357,7 @@ class ARESEA(gym.Env):
             np.array(self.is_in_threshold_history[-self.threshold_hold :]).all()
         )
         is_success = is_stable_in_threshold and len(self.is_in_threshold_history) > 5
-        is_failure = self.abort_if_off_screen and not self.is_beam_on_screen
+        is_failure = self.abort_if_off_screen and not self.is_beam_on_screen()
         done = is_success or is_failure
 
         # Compute reward
@@ -737,7 +738,10 @@ class ARESEACheetah(ARESEA):
         screen = self.simulation.AREABSCR1
         beam_position = np.array([screen.read_beam.mu_x, screen.read_beam.mu_y])
         limits = np.array(screen.resolution) / 2 * np.array(screen.pixel_size)
-        return np.all(np.abs(beam_position) < limits)
+        extended_limits = (
+            limits + np.array([screen.read_beam.sigma_x, screen.read_beam.sigma_y]) * 2
+        )
+        return np.all(np.abs(beam_position) < extended_limits)
 
     def get_magnets(self):
         return np.array(
