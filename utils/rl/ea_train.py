@@ -349,8 +349,10 @@ class ARESEA(gym.Env):
                 self.target_sigma_x_threshold,
                 self.target_mu_y_threshold,
                 self.target_sigma_y_threshold,
-            ]
+            ],
+            dtype=np.double,
         )
+        threshold = np.nan_to_num(threshold)
         is_in_threshold = np.abs(cb - tb) < threshold
         self.is_in_threshold_history.append(is_in_threshold)
         is_stable_in_threshold = bool(
@@ -363,6 +365,7 @@ class ARESEA(gym.Env):
         # Compute reward
         if self.reward_mode == "negative_objective":
             reward = -np.sum(np.abs(cb - tb)[[1, 3]])
+            reward -= 100
         elif self.reward_mode == "sum_of_pixels":
             screen_image = self.get_screen_image()
             reward = -np.sum(screen_image)
@@ -472,7 +475,7 @@ class ARESEA(gym.Env):
             black,
         )
         mu_x_color = black
-        if self.target_mu_x_threshold != np.inf:
+        if self.target_mu_x_threshold not in [np.inf, None]:
             mu_x_color = (
                 green if abs(cb[0] - tb[0]) < self.target_mu_x_threshold else red
             )
@@ -485,7 +488,7 @@ class ARESEA(gym.Env):
             mu_x_color,
         )
         sigma_x_color = black
-        if self.target_sigma_x_threshold != np.inf:
+        if self.target_sigma_x_threshold not in [np.inf, None]:
             sigma_x_color = (
                 green if abs(cb[1] - tb[1]) < self.target_sigma_x_threshold else red
             )
@@ -498,7 +501,7 @@ class ARESEA(gym.Env):
             sigma_x_color,
         )
         mu_y_color = black
-        if self.target_mu_y_threshold != np.inf:
+        if self.target_mu_y_threshold not in [np.inf, None]:
             mu_y_color = (
                 green if abs(cb[2] - tb[2]) < self.target_mu_y_threshold else red
             )
@@ -511,7 +514,7 @@ class ARESEA(gym.Env):
             mu_y_color,
         )
         sigma_y_color = black
-        if self.target_sigma_y_threshold != np.inf:
+        if self.target_sigma_y_threshold not in [np.inf, None]:
             sigma_y_color = (
                 green if abs(cb[3] - tb[3]) < self.target_sigma_y_threshold else red
             )
