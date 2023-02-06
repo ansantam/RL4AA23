@@ -150,6 +150,7 @@ def make_env(config, record_video=False, monitor_filename=None):
         target_sigma_x_threshold=config["target_sigma_x_threshold"],
         target_sigma_y_threshold=config["target_sigma_y_threshold"],
         threshold_hold=config["threshold_hold"],
+        time_reward=config["time_reward"],
     )
     if config["filter_observation"] is not None:
         env = FilterObservation(env, config["filter_observation"])
@@ -211,6 +212,7 @@ class ARESEA(gym.Env):
         target_sigma_x_threshold=3.3198e-6,
         target_sigma_y_threshold=2.4469e-6,
         threshold_hold=1,
+        time_reward=-0.0,
     ):
         self.abort_if_off_screen = abort_if_off_screen
         self.action_mode = action_mode
@@ -225,6 +227,7 @@ class ARESEA(gym.Env):
         self.target_sigma_x_threshold = target_sigma_x_threshold
         self.target_sigma_y_threshold = target_sigma_y_threshold
         self.threshold_hold = threshold_hold
+        self.time_reward = time_reward
 
         # Create action space
         if self.action_mode == "direct":
@@ -364,13 +367,20 @@ class ARESEA(gym.Env):
 
         # Compute reward
         if self.reward_mode == "negative_objective":
-            reward = -np.sum(np.abs(cb - tb)[[1, 3]])
-            reward -= 100
+            current_objective = np.sum(np.abs(cb - tb)[[1, 3]])
+            initial_objective = np.sum(np.abs(ib - tb)[[1, 3]])
+            reward = -current_objective / initial_objective
+        elif self.reward_mode == "objective_improvement":
+            current_objective = np.sum(np.abs(cb - tb)[[1, 3]])
+            previous_objective = np.sum(np.abs(pb - tb)[[1, 3]])
+            initial_objective = np.sum(np.abs(ib - tb)[[1, 3]])
+            reward = (previous_objective - current_objective) / initial_objective
         elif self.reward_mode == "sum_of_pixels":
             screen_image = self.get_screen_image()
             reward = -np.sum(screen_image)
         else:
             raise ValueError(f'Invalid value "{self.reward_mode}" for reward_mode')
+        reward += self.time_reward
         reward = float(reward)
 
         # Put together info
@@ -711,6 +721,7 @@ class ARESEACheetah(ARESEA):
         target_sigma_x_threshold=3.3198e-6,
         target_sigma_y_threshold=2.4469e-6,
         threshold_hold=1,
+        time_reward=-0.0,
     ):
         super().__init__(
             action_mode=action_mode,
@@ -726,6 +737,7 @@ class ARESEACheetah(ARESEA):
             target_sigma_x_threshold=target_sigma_x_threshold,
             target_sigma_y_threshold=target_sigma_y_threshold,
             threshold_hold=threshold_hold,
+            time_reward=time_reward,
         )
 
         self.incoming_mode = incoming_mode
