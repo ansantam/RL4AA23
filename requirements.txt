@@ -1,4 +1,4 @@
-cheetah-accelerator
+cheetah-accelerator>=0.5.18
 imageio==2.4.1
 ipywidgets
 jupyterlab
