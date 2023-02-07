@@ -3,9 +3,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,macos,vim,emacs,windows
 
 # RL4AA23 specific
-utils/rl/ares_ea/models
-utils/rl/ares_ea/monitors
-utils/rl/ares_ea/recordings
+utils/models
+utils/monitors
+utils/recordings
 
 #*.txt
 

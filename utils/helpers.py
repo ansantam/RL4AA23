@@ -10,18 +10,18 @@ from IPython import display
 from moviepy.editor import VideoFileClip
 from stable_baselines3 import PPO
 
-from .ea_train import make_env, read_from_yaml
+from .train import make_env, read_from_yaml
 from .utils import NotVecNormalize
 
 # ----- Notebook utilities ----------------------------------------------------
 
 
 def evaluate_ares_ea_agent(run_name, n=200, include_position=False):
-    loaded_model = PPO.load(f"utils/rl/ares_ea/models/{run_name}/model")
-    loaded_config = read_from_yaml(f"utils/rl/ares_ea/models/{run_name}/config")
+    loaded_model = PPO.load(f"utils/models/{run_name}/model")
+    loaded_config = read_from_yaml(f"utils/models/{run_name}/config")
 
     env = make_env(loaded_config)
-    env = NotVecNormalize(env, f"utils/rl/ares_ea/models/{run_name}/normalizer")
+    env = NotVecNormalize(env, f"utils/models/{run_name}/normalizer")
 
     maes = []
     for _ in range(n):
@@ -38,7 +38,7 @@ def evaluate_ares_ea_agent(run_name, n=200, include_position=False):
 
 
 def make_ares_ea_training_videos():
-    recdir = "utils/rl/ares_ea/recordings/ml_workshop"
+    recdir = "utils/recordings/ml_workshop"
     imgdir = "img"
 
     for eval_episode in [0, 27, 343]:
@@ -79,7 +79,7 @@ def make_lunar_lander_training_gifs():
 
 def plot_ares_ea_training_history(run_name):
     monitor = pd.read_csv(
-        f"utils/rl/ares_ea/monitors/{run_name}/0.monitor.csv",
+        f"utils/monitors/{run_name}/0.monitor.csv",
         index_col=False,
         skiprows=1,
     )

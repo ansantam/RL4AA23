@@ -80,7 +80,7 @@ def train(config):
         )
     else:
         raise ValueError(f"Invalid value \"{config['vec_env']}\" for dummy")
-    pathlib.Path(f"utils/rl/ares_ea/monitors/{config['run_name']}").mkdir(
+    pathlib.Path(f"utils/monitors/{config['run_name']}").mkdir(
         parents=True, exist_ok=True
     )
     eval_env = DummyVecEnv(
@@ -89,7 +89,7 @@ def train(config):
                 make_env,
                 config,
                 record_video=True,
-                monitor_filename=f"utils/rl/ares_ea/monitors/{config['run_name']}/0",
+                monitor_filename=f"utils/monitors/{config['run_name']}/0",
             )
         ]
     )
@@ -126,10 +126,10 @@ def train(config):
         eval_freq=500,
     )
 
-    model.save(f"utils/rl/ares_ea/models/{run_name}/model")
+    model.save(f"utils/models/{run_name}/model")
     if config["normalize_observation"] or config["normalize_reward"]:
-        env.save(f"utils/rl/ares_ea/models/{run_name}/normalizer")
-    save_to_yaml(config, f"utils/rl/ares_ea/models/{run_name}/config")
+        env.save(f"utils/models/{run_name}/normalizer")
+    save_to_yaml(config, f"utils/models/{run_name}/config")
 
 
 def make_env(config, record_video=False, monitor_filename=None):
@@ -168,7 +168,7 @@ def make_env(config, record_video=False, monitor_filename=None):
     env = Monitor(env, filename=monitor_filename)
     if record_video:
         env = RecordVideo(
-            env, video_folder=f"utils/rl/ares_ea/recordings/{config['wandb_run_name']}"
+            env, video_folder=f"utils/recordings/{config['wandb_run_name']}"
         )
     return env
 
@@ -746,7 +746,7 @@ class ARESEACheetah(ARESEA):
         self.misalignment_values = misalignment_values
 
         # Create particle simulation
-        with open("utils/rl/ea_lattice.pkl", "rb") as f:
+        with open("utils/lattice.pkl", "rb") as f:
             self.simulation = pickle.load(f)
 
     def is_beam_on_screen(self):
