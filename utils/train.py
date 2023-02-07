@@ -70,6 +70,19 @@ def train(config):
     config["incoming_mode"] = "random"
     config["incoming_values"] = None
     config["sb3_device"] = "auto"
+    config["filter_action"] = [0, 1, 3]
+    config["filter_observation"] = ["beam", "magnets"]
+    config["magnet_init_mode"] = "constant"
+    config["magnet_init_values"] = np.zeros(5)
+    config["misalignment_mode"] = "constant"
+    config["misalignment_values"] = np.zeros(8)
+    config["n_envs"] = 40
+    config["n_steps"] = 40
+    config["target_beam_mode"] = "constant"
+    config["target_beam_values"] = np.zeros(4)
+    config["target_mu_x_threshold"] = np.inf
+    config["target_mu_y_threshold"] = np.inf
+    config["vec_env"] = "dummy"
 
     # Setup environments
     if config["vec_env"] == "dummy":
