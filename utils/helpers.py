@@ -5,6 +5,7 @@ import imageio
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from gym.wrappers import RecordVideo
 from IPython import display
 from moviepy.editor import VideoFileClip
@@ -24,17 +25,42 @@ def evaluate_ares_ea_agent(run_name, n=200, include_position=False):
     env = NotVecNormalize(env, f"utils/models/{run_name}/normalizer")
 
     maes = []
+    step_indicies = []
+    err_sigma_xs = []
+    err_sigma_ys = []
     for _ in range(n):
         done = False
         observation = env.reset()
+        i = 0
         while not done:
+            i += 1
             action, _ = loaded_model.predict(observation)
             observation, reward, done, info = env.step(action)
+            err_sigma_xs.append(info["err_sigma_x"])
+            err_sigma_ys.append(info["err_sigma_y"])
+            step_indicies.append(i)
         maes.append(info["mae_all"] if include_position else info["mae_focus"])
     env.close()
 
-    score = np.mean(maes)
-    print(f"==> Achieved a score of {score} ({n} evaluations)")
+    mean_mae = np.mean(maes)
+    rmse = np.sqrt(np.mean(np.square(np.concatenate([err_sigma_xs, err_sigma_ys]))))
+    mean_steps = len(err_sigma_xs) / n
+
+    print(f"Evaluation results ({n} evaluations)")
+    print("----------------------------------------")
+    print(f"==> Mean MAE = {mean_mae}")
+    print(f"==> RMSE = {rmse}")
+    print(f"==> Mean no. of steps = {mean_steps}")
+
+    sns.lineplot(
+        x=step_indicies * 2,
+        y=err_sigma_xs + err_sigma_ys,
+        hue=[r"$\sigma_x$"] * len(err_sigma_xs) + [r"$\sigma_y$"] * len(err_sigma_ys),
+    )
+    plt.xlim(0, None)
+    plt.xlabel("Step")
+    plt.ylabel("Error (m)")
+    plt.show()
 
 
 def make_ares_ea_training_videos():

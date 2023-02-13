@@ -406,6 +406,8 @@ class ARESEA(gym.Env):
         mae_all = (err_mu_x + err_sigma_x + err_mu_y + err_sigma_y) / 4
         info = {
             "binning": self.get_binning(),
+            "err_sigma_x": err_sigma_x,
+            "err_sigma_y": err_sigma_y,
             "mae_focus": mae_focus,
             "mae_all": mae_all,
             "pixel_size": self.get_pixel_size(),

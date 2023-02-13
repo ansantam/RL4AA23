@@ -6,5 +6,6 @@ matplotlib
 moviepy
 names
 opencv-python
+seaborn
 pyyaml
 stable-baselines3==1.5
