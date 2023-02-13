@@ -130,6 +130,7 @@ def train(config):
         gamma=config["gamma"],
         n_steps=config["n_steps"],
         batch_size=config["batch_size"],
+        policy_kwargs={"net_arch": config["net_arch"]},
         verbose=0,
     )
 
