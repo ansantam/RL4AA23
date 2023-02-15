@@ -561,6 +561,7 @@ class ARESEA(gym.Env):
 
     def close(self):
         cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
     def is_beam_on_screen(self):
         """
