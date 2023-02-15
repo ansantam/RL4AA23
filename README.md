@@ -28,8 +28,9 @@ Github repository containing the material: [https://github.com/ansantam/RL4AA23]
 ### Setup the environment locally
 
 - Open terminal app
-- (Suggested) Create a virtual envrionment using `conda` or `venv`. Here we should the example using `conda`: `conda -n rl4aa python=3.10`
+- (Suggested) Create a virtual envrionment using `conda` or `venv`. Here we show the example using `conda`: `conda -n rl4aa python=3.10`
 - Activate the virtual environment `conda activate rl4aa`
 - Make sure your are in the correct directory `cd path_to_your_folder/RL4AA23`
 - Install the dependencies `pip install -r requirements.txt`
-- Start the tutorial notebook `jupyter notebook`
+- Start the jupyter notebook `jupyter notebook`
+- Open the tutorial notebook `tutorial.ipynb` in the jupyter server in browser
