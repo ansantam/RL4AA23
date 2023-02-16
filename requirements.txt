@@ -8,4 +8,4 @@ names
 opencv-python
 seaborn
 pyyaml
-stable-baselines3==1.5
+stable-baselines3==1.6.0
