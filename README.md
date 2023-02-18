@@ -17,7 +17,8 @@ This repository contains the material for the second day of the [RL4AA'23](https
 
 ## Python tutorial: reinforcement learning implementation example
 
-Github repository containing the material: [https://github.com/ansantam/RL4AA23](https://github.com/ansantam/RL4AA23)
+- Github repository containing the material: [https://github.com/ansantam/RL4AA23](https://github.com/ansantam/RL4AA23)
+- Tutorial in slide form: [https://ansantam.github.io/RL4AA23/tutorial.slides.html#/](here)
 
 ## Getting started
 
@@ -28,9 +29,35 @@ Github repository containing the material: [https://github.com/ansantam/RL4AA23]
 ### Setup the environment locally
 
 - Open terminal app
-- (Suggested) Create a virtual envrionment using `conda` or `venv`. Here we show the example using `conda`: `conda -n rl4aa python=3.10`
-- Activate the virtual environment `conda activate rl4aa`
-- Make sure your are in the correct directory `cd path_to_your_folder/RL4AA23`
-- Install the dependencies `pip install -r requirements.txt`
-- Start the jupyter notebook `jupyter notebook`
+- (Suggested) Create a virtual envrionment using `conda` or `venv`. 
+
+#### venv
+
+You need to have `venv` installed 
+- For Mac: `sudo pip3 install virtualenv`
+- For Linux: `sudo apt-get install python3-venv`
+
+```
+python3 -m venv rl4aa
+source rl4aa/bin/activate
+pip3 install -r requirements.txt
+jupyter notebook
+```
+
 - Open the tutorial notebook `tutorial.ipynb` in the jupyter server in browser
+- When you are done type `deactivate`
+
+#### conda
+
+Instructions to install conda [https://docs.conda.io/projects/conda/en/4.6.1/user-guide/install/index.html](here)
+
+```
+conda -n rl4aa python=3.10
+conda activate rl4aa
+cd path_to_your_folder/RL4AA23
+pip3 install -r requirements.txt
+jupyter notebook
+```
+
+- Open the tutorial notebook `tutorial.ipynb` in the jupyter server in browser
+- When you are done type `source deactivate`
