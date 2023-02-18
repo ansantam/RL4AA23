@@ -18,7 +18,7 @@ This repository contains the material for the second day of the [RL4AA'23](https
 ## Python tutorial: reinforcement learning implementation example
 
 - Github repository containing the material: [https://github.com/ansantam/RL4AA23](https://github.com/ansantam/RL4AA23)
-- Tutorial in slide form: [https://ansantam.github.io/RL4AA23/tutorial.slides.html#/](here)
+- Tutorial in slide form: [https://ansantam.github.io/RL4AA23/tutorial.slides.html#/](https://ansantam.github.io/RL4AA23/tutorial.slides.html#/)
 
 ## Getting started
 
@@ -49,7 +49,7 @@ jupyter notebook
 
 #### conda
 
-Instructions to install conda [https://docs.conda.io/projects/conda/en/4.6.1/user-guide/install/index.html](here)
+Instructions to install conda [here](https://docs.conda.io/projects/conda/en/4.6.1/user-guide/install/index.html)
 
 ```
 conda -n rl4aa python=3.10
