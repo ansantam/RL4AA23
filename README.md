@@ -29,15 +29,11 @@ This repository contains the material for the second day of the [RL4AA'23](https
 ### Setup the environment locally
 
 - Open terminal app
-- (Suggested) Create a virtual envrionment using `conda` or `venv`. 
+- (Suggested) Create a virtual envrionment using `conda` or `venv`.
 
 #### venv
 
-You need to have `venv` installed 
-- For Mac: `sudo pip3 install virtualenv`
-- For Linux: `sudo apt-get install python3-venv`
-
-```
+```bash
 python3 -m venv rl4aa
 source rl4aa/bin/activate
 pip3 install -r requirements.txt
@@ -51,8 +47,8 @@ jupyter notebook
 
 Instructions to install conda [here](https://docs.conda.io/projects/conda/en/4.6.1/user-guide/install/index.html)
 
-```
-conda -n rl4aa python=3.10
+```bash
+conda create -n rl4aa python=3.10
 conda activate rl4aa
 cd path_to_your_folder/RL4AA23
 pip3 install -r requirements.txt
