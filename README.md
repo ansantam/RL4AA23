@@ -56,4 +56,4 @@ jupyter notebook
 ```
 
 - Open the tutorial notebook `tutorial.ipynb` in the jupyter server in browser
-- When you are done type `source deactivate`
+- When you are done type `conda deactivate`
